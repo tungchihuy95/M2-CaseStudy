@@ -2,11 +2,10 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
-public class Employee1 {
-    private int id;
+public class Person {
+    private String id;
     private String name;
     private LocalDate year;
-    private int age;
     private String gender;
     private String from;
     private String phone;
@@ -18,29 +17,24 @@ public class Employee1 {
 
     private DepartmentEnum department;
 
-    public Employee1() {
 
-    }
+//    public Person(String name, LocalDate year, String gender, String from, String phone, String email, String edu, String dept, String wage) {
+//
+//        this.name = name;
+//        this.year = year;
+//        this.gender = gender;
+//        this.from = from;
+//        this.phone = phone;
+//        this.email = email;
+//        this.edu = edu;
+//        this.dept = dept;
+//        this.wage = wage;
+//    }
 
-    public Employee1(int id, String name, LocalDate year, String gender, String from, String phone, String email, String edu, String dept, String wage) {
-        this.id = id;
+    public Person(String name,String id, String year, String gender, String from, String phone, String email, String edu, String dept, String wage) {
         this.name = name;
-        this.year = year;
-//        this.age = age;
-        this.gender = gender;
-        this.from = from;
-        this.phone = phone;
-        this.email = email;
-        this.edu = edu;
-        this.dept = dept;
-        this.wage = wage;
-    }
-
-    public Employee1(int id, String name, String year, String gender, String from, String phone, String email, String edu, String dept, String wage) {
         this.id = id;
-        this.name = name;
         this.setYear(year);
-//        this.age = age;
         this.gender = gender;
         this.from = from;
         this.phone = phone;
@@ -49,12 +43,11 @@ public class Employee1 {
         this.dept = dept;
         this.wage = wage;
     }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public  void setID(String id) {
         this.id = id;
     }
 
@@ -78,15 +71,6 @@ public class Employee1 {
         this.year = LocalDate.parse(year, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
-    public int getAge() {
-        LocalDate today = LocalDate.now();
-        Period period = Period.between(this.year, today);
-        return period.getYears();
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
 
     public String getGender() {
         return gender;
@@ -151,4 +135,5 @@ public class Employee1 {
     public void setDepartment(DepartmentEnum department) {
         this.department = department;
     }
+
 }

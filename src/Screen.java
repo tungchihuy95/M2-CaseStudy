@@ -5,10 +5,18 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Employee<Employees> extends JFrame {
+import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.iterator;
+
+public class Screen<Employees> extends JFrame {
 
     private JPanel panelMain;
     private JTabbedPane tabbedPane1;
@@ -46,7 +54,6 @@ public class Employee<Employees> extends JFrame {
     private JTextField textName;
     private JTextField textID;
     private JTextField textYear;
-    private JTextField textAge;
     private JTextField textGender;
     private JTextField textFrom;
     private JTextField textPhone;
@@ -92,7 +99,6 @@ public class Employee<Employees> extends JFrame {
 
     private JList mainList;
     private JList MNlist;
-    private JList HRList;
     private JList saleList;
     private JList mktList;
     private JList accList;
@@ -109,104 +115,48 @@ public class Employee<Employees> extends JFrame {
     private JButton SAVEEXIST4;
     private JButton ADDNEW5;
     private JButton SAVEEXIST5;
+    private JList HRList;
 
 
 
+    private ArrayList<Person> people;
 
-    private ArrayList<Employee> people;
+    private List<Person> personList;
+
     private DefaultListModel listPeopleModel;
 
 
-    Employee() {
+    Screen() {
         super("Employee Management");
         this.setContentPane(this.panelMain);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
-        people = new ArrayList<Employee>();
+        people = new ArrayList<Person>();
         listPeopleModel = new DefaultListModel();
         mainList.setModel(listPeopleModel);
         SAVEEXIST6.setEnabled(false);
 
+        EXITButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-//        ADDNEW.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//
-//            }
-//        });
-//        SAVEEXIST.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//
-//            }
-//        });
-//        DELETEButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//
-//            }
-//        });
+            }
+        });
 
         ADDNEW6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Person person = new Person(
-
-                        textID.getText(),
-                        textName.getText(),
-                        textYear.getText(),
-                       textAge.getText(),
-                        textGender.getText(),
-                        textFrom.getText(),
-                        textPhone.getText(),
-                        textEmail.getText(),
-                        textEdu.getText(),
-                        textDept.getText(),
-                        textWage.getText()
-
-                );
-                people.add(person);
-                refreshPeopleList();
+                newAdd(e);
             }
         });
-
-//                Employee person = people.get(employeeID);
-//                person.setName(textName.getText());
-//                person.setId(Integer.parseInt(textID.getText()));
-//                person.setYear(textYear.getText());
-//                person.setGender(textGender.getText());
-//                person.setFrom(textFrom.getText());
-//                person.setPhone(textPhone.getText());
-//                person.setEmail(textEmail.getText());
-//                person.setEdu(textEdu.getText());
-//                person.setDept(textDept.getText());
-//                person.setWage(textWage.getText());
-//                refreshPeopleList();
-//            }
 
         SAVEEXIST6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int employeeID = mainList.getSelectedIndex();
-                if (employeeID >= 0) {
-                    Employee person = people.get(employeeID);
-                    person.setName(textName.getText());
-                    person.setId(Integer.parseInt(textID.getText()));
-                    person.setYear(textYear.getText());
-                    person.setGender(textGender.getText());
-                    person.setFrom(textFrom.getText());
-                    person.setPhone(textPhone.getText());
-                    person.setEmail(textEmail.getText());
-                }
+                existSave(e);
             }
         });
         DELETEButton6.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        EXITButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -216,77 +166,137 @@ public class Employee<Employees> extends JFrame {
         mainList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                int employeeID = mainList.getSelectedIndex();
-                if (employeeID >= 0) {
-                    Employee person = people.get(employeeID);
-                    textID.setText(String.valueOf(person.getId()));
-                    textName.setText(person.getName());
-                    textYear.setText(person.getYear().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                    textAge.setText(Integer.toString(person.getAge()));
-                    textGender.setText(person.getGender());
-                    textFrom.setText(person.getFrom());
-                    textPhone.setText(person.getPhone());
-                    textEmail.setText(person.getEmail());
-                    textEdu.setText(person.getEdu());
-                    textDept.setText(person.getDept());
-                    textWage.setText(person.getWage());
-                    SAVEEXIST6.setEnabled(true);
-                } else {
-                    SAVEEXIST6.setEnabled(false);
-                }
+                mainListSelection(e);
             }
         });
 
     }
 
+    public void newAdd(ActionEvent e) {
+        Person person = new Person(
+                textName.getText(),
+                textID.getText(),
+                textYear.getText(),
+                textGender.getText(),
+                textFrom.getText(),
+                textPhone.getText(),
+                textEmail.getText(),
+                textEdu.getText(),
+                textDept.getText(),
+                textWage.getText()
 
+        );
+        people.add(person);
 
-//    public JTable getTable1() {
-//        return table1;
-//    }
-
-    private void createTable() {
-        table1.setModel(new DefaultTableModel());
+        refreshPeopleList();
     }
 
+    public void existSave(ActionEvent e) {
+        int employeeID = mainList.getSelectedIndex();
+        if (employeeID >= 0) {
+            Person person = people.get(employeeID);
+            person.setName(textName.getText());
+            person.setID((textID.getText()));
+            person.setYear(textYear.getText());
+            person.setGender(textGender.getText());
+            person.setFrom(textFrom.getText());
+            person.setPhone(textPhone.getText());
+            person.setEmail(textEmail.getText());
+            person.setEdu(textEdu.getText());
+            person.setDept(textDept.getText());
+            person.setWage(textWage.getText());
+            refreshPeopleList();
+        }
+    }
+
+    public void mainListSelection(ListSelectionEvent e) {
+        int employeeID = mainList.getSelectedIndex();
+        if (employeeID >= 0) {
+            Person person = people.get(employeeID);
+            textName.setText(person.getName());
+            textID.setText(person.getId());
+            textYear.setText(person.getYear().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            textGender.setText(person.getGender());
+            textFrom.setText(person.getFrom());
+            textPhone.setText(person.getPhone());
+            textEmail.setText(person.getEmail());
+            textEdu.setText(person.getEdu());
+            textDept.setText(person.getDept());
+            textWage.setText(person.getWage());
+            SAVEEXIST6.setEnabled(true);
+        } else {
+            SAVEEXIST6.setEnabled(false);
+        }
+    }
 
 
     public void refreshPeopleList() {
         listPeopleModel.removeAllElements();
         System.out.println("Remove all people from list");
-        for (Employee person: people) {
+        for (Person person : people) {
             System.out.println("Adding Employee to list:" + person.getName());
-            listPeopleModel.addElement(person.getName());
+            listPeopleModel.addElement(person.getId() + " " + person.getName()  );
 
         }
     }
 
-    public void addPerson(Employee person) {
+    public void addPerson(Person person) {
         people.add(person); //everytime adding a person// , --> refresh the list
         refreshPeopleList();
     }
 
 
-
     public static void main(String[] args) {
-           Employee screenpersonManagement = new Employee();
-        screenpersonManagement.setVisible(true);
+        Screen sr = new Screen();
+        sr.setVisible(true);
 
         Color color = new Color(80, 10, 5);
 
-        screenpersonManagement.getContentPane().setBackground(Color.pink);
+        sr.getContentPane().setBackground(Color.pink);
 
-        Employee Tung = new Employee(001, "NGUYEN QUOC TUNG", "19/02/1995", "Male", "Hung yen", "0985671295", "tunghaha@gmail.com", "University", "MN", "100,000,000");
-        Employee Quan = new Employee(002, "LE HONG QUAN", "20/06/1995", "Male", "Hoa binh", "0992771295", "quankun@gmail.com", "University", "HR", "100,000,000");
-        Employee Huy = new Employee(003, "TRINH VAN HUY", "04/05/1995", "Male","Nghe an", "0985671295", "hitachi@gmail.com", "College", "Sale", "100,000,000");
-        Employee Thuy = new Employee(004, "LE THI THUY", "25/11/1988", "Female", "Thanh hoa","0985671295", "thuythuy@gmail.com", "University", "MKT", "100,000,000");
-        Employee Trang = new Employee(005, "PHAM THUY TRANG", "31/12/1993", "Female", "Quang ninh", "0985671295", "trangtrong@gmail.com", "Master", "ACC", "100,000,000");
+        Person Tung = new Person("NGUYEN QUOC TUNG","001", "19/02/1995", "Male", "Hung yen", "0985671295", "tunghaha@gmail.com", "University", "MN", "100,000,000");
+        Person Quan = new Person("LE HONG QUAN", "002", "20/06/1995", "Male", "Hoa binh", "0992771295", "quankun@gmail.com", "University", "HR", "100,000,000");
+        Person Huy = new Person("TRINH VAN HUY","003", "04/05/1995", "Male", "Nghe an", "0985671295", "hitachi@gmail.com", "College", "Sale", "100,000,000");
+        Person Thuy = new Person("LE THI THUY","004", "25/11/1988", "Female", "Thanh hoa", "0985671295", "thuythuy@gmail.com", "University", "MKT", "100,000,000");
+        Person Trang = new Person("PHAM THUY TRANG","005", "31/12/1993", "Female", "Quang ninh", "0985671295", "trangtrong@gmail.com", "Master", "ACC", "100,000,000");
+        Person Binh = new Person("PHAM THANH BINH","006", "11/06/1994", "Male", "Hung yen", "0985671295", "tunghaha@gmail.com", "University", "MN", "100,000,000");
+        Person Dung = new Person("NGUYEN HANH DUNG", "007", "24/04/1997", "Male", "Hoa binh", "0992771295", "quankun@gmail.com", "University", "HR", "100,000,000");
+        Person Tuyen = new Person("PHAM DANG TUYEN","008", "12/11/1995", "Male", "Nghe an", "0985671295", "hitachi@gmail.com", "College", "Sale", "100,000,000");
+        Person Vinh = new Person("NGUYEN QUANG VINH","009", "09/10/1999", "Female", "Thanh hoa", "0985671295", "thuythuy@gmail.com", "University", "MKT", "100,000,000");
+        Person Phuong = new Person("TRINH MAI PHUONG","010", "31/12/1993", "Female", "Quang ninh", "0985671295", "trangtrong@gmail.com", "Master", "ACC", "100,000,000");
+        Person Hai = new Person("DAO NGOC HAI","011", "19/02/1995", "Male", "Hung yen", "0985671295", "tunghaha@gmail.com", "University", "MN", "100,000,000");
+        Person Tuan = new Person("TIEU MINH TUAN", "012", "20/06/1995", "Male", "Hoa binh", "0992771295", "quankun@gmail.com", "University", "HR", "100,000,000");
+        Person Quang = new Person("CHU VAN QUANG","013", "04/05/1995", "Male", "Nghe an", "0985671295", "hitachi@gmail.com", "College", "Sale", "100,000,000");
+        Person Khue = new Person("NGUYEN MINH NGOC KHUE","014", "25/11/1988", "Female", "Thanh hoa", "0985671295", "thuythuy@gmail.com", "University", "MKT", "100,000,000");
+        Person Hieu = new Person("NGUYEN TRUNG HIEU","015", "31/12/1993", "Female", "Quang ninh", "0985671295", "trangtrong@gmail.com", "Master", "ACC", "100,000,000");
+        Person Trung = new Person("HOANG VAN TRUNG","016", "19/02/1995", "Male", "Hung yen", "0985671295", "tunghaha@gmail.com", "University", "MN", "100,000,000");
+        Person Nam = new Person("NGUYEN DONG NAM", "017", "20/06/1995", "Male", "Hoa binh", "0992771295", "quankun@gmail.com", "University", "HR", "100,000,000");
+        Person Anh = new Person("TRAN HUY ANH","018", "04/05/1995", "Male", "Nghe an", "0985671295", "hitachi@gmail.com", "College", "Sale", "100,000,000");
+        Person Nguyen = new Person("VU KHAC NGUYEN","019", "25/11/1988", "Female", "Thanh hoa", "0985671295", "thuythuy@gmail.com", "University", "MKT", "100,000,000");
+        Person Hoa = new Person("LUONG THI HOA","020", "31/12/1993", "Female", "Quang ninh", "0985671295", "trangtrong@gmail.com", "Master", "ACC", "100,000,000");
 
-        screenpersonManagement.addPerson(Tung);
-        screenpersonManagement.addPerson(Quan);
-        screenpersonManagement.addPerson(Huy);
-        screenpersonManagement.addPerson(Thuy);
-        screenpersonManagement.addPerson(Trang);
+
+
+        sr.addPerson(Tung);
+        sr.addPerson(Quan);
+        sr.addPerson(Huy);
+        sr.addPerson(Thuy);
+        sr.addPerson(Trang);
+        sr.addPerson(Binh);
+        sr.addPerson(Dung);
+        sr.addPerson(Tuyen);
+        sr.addPerson(Vinh);
+        sr.addPerson(Phuong);
+        sr.addPerson(Hai);
+        sr.addPerson(Tuan);
+        sr.addPerson(Quang);
+        sr.addPerson(Khue);
+        sr.addPerson(Hieu);
+        sr.addPerson(Trung);
+        sr.addPerson(Nam);
+        sr.addPerson(Anh);
+        sr.addPerson(Nguyen);
+        sr.addPerson(Hoa);
     }
 
 }
