@@ -1,11 +1,14 @@
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 public class EmployeeManager {
     private ArrayList<Person> employees;
 
-    public ArrayList<Person> getEmployees() {
-        return employees;
-    }
+//    public ArrayList<Person> getEmployees() {
+//        return employees;
+//    }
 
     public ArrayList<Person> search(String keywords) {
         // duyet employees, filter by keywords
@@ -13,9 +16,9 @@ public class EmployeeManager {
         return employees;
     }
 
-    public void addNew(Person employees) {
-        this.employees.add(employees);
-    }
+//    public void addNew(Person employees) {
+//        this.employees.add(employees);
+//    }
 
 
 
@@ -41,6 +44,30 @@ public class EmployeeManager {
 
     // Click tab nao thi tryen department cua tab do
     // Sau do goi ham show data len mainList cua cai tab do
+
+       public void delete(ActionEvent e) {
+
+       }
+//        Person person =null;
+//        int size=employees.size();
+//        for (int i=0;i<size;i++) {
+//            if (employees.get(i).getId().equals(e)) {
+//                person = employees.get(i);
+//                break;
+//            }
+//        }
+//        if (person!=null) {
+//            employees.remove(person);
+//            EmployeeManager.write(employees);
+//            System.out.println("Delete completed!");
+//        } else {
+//            System.out.println("This employee's ID: "+ e +" is not existed in List.");
+//        }
+//    }
+
+    static void write(ArrayList<Person> employees) {
+    }
+
     public ArrayList<Person> filterByDepartment(DepartmentEnum department) {
         ArrayList<Person> results = new ArrayList<Person>();
         for (Person employees : this.employees) {

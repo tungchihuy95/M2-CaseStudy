@@ -2,39 +2,38 @@
 
 
 import java.io.*;
-        import java.util.ArrayList;
-        import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
+
 public class AfterSaveEmployee {
-    private static final String EMPLOYEE_FILE_NAME ="employee.txt";
+    private static final String EMPLOYEE_FILE_NAME = "employee.txt";
+
     public void write(List<Person> employeeList) {
-        FileOutputStream fileOutputStream=null;
-        ObjectOutputStream objectOutputStream=null;
+        FileOutputStream fileOutputStream = null;
+        ObjectOutputStream objectOutputStream = null;
         try {
-            fileOutputStream=new FileOutputStream(new File(EMPLOYEE_FILE_NAME));
-            objectOutputStream=new ObjectOutputStream(fileOutputStream);
+            fileOutputStream = new FileOutputStream(new File(EMPLOYEE_FILE_NAME));
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(employeeList);
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             closeStream(fileOutputStream);
             closeStream(objectOutputStream);
         }
     }
+
     public List<Person> read() {
-        List<Person> employeeList=new ArrayList<>();
-        FileInputStream fileInputStream=null;
-        ObjectInputStream objectInputStream=null;
+        List<Person> employeeList = new ArrayList<>();
+        FileInputStream fileInputStream = null;
+        ObjectInputStream objectInputStream = null;
         try {
-            fileInputStream=new FileInputStream(new File(EMPLOYEE_FILE_NAME));
-            objectInputStream=new ObjectInputStream(fileInputStream);
-            employeeList=(List<Person>)objectInputStream.readObject();
-        }
-        catch (FileNotFoundException e) {
+            fileInputStream = new FileInputStream(new File(EMPLOYEE_FILE_NAME));
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            employeeList = (List<Person>) objectInputStream.readObject();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,8 +45,9 @@ public class AfterSaveEmployee {
         }
         return employeeList;
     }
+
     public void closeStream(InputStream is) {
-        if (is!=null) {
+        if (is != null) {
             try {
                 is.close();
             } catch (IOException e) {
@@ -55,8 +55,9 @@ public class AfterSaveEmployee {
             }
         }
     }
+
     public void closeStream(OutputStream os) {
-        if (os!=null) {
+        if (os != null) {
             try {
                 os.close();
             } catch (IOException e) {

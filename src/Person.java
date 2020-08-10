@@ -1,8 +1,9 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
-public class Person {
+public class Person implements Serializable {
     private String id;
     private String name;
     private LocalDate year;
@@ -31,7 +32,9 @@ public class Person {
 //        this.wage = wage;
 //    }
 
-    public Person(String name,String id, String year, String gender, String from, String phone, String email, String edu, String dept, String wage) {
+//    public Person(){
+//    }
+    public Person(String name, String id, String year, String gender, String from, String phone, String email, String edu, String dept, String wage) {
         this.name = name;
         this.id = id;
         this.setYear(year);
@@ -43,11 +46,12 @@ public class Person {
         this.dept = dept;
         this.wage = wage;
     }
+
     public String getId() {
         return id;
     }
 
-    public  void setID(String id) {
+    public void setID(String id) {
         this.id = id;
     }
 
@@ -136,4 +140,20 @@ public class Person {
         this.department = department;
     }
 
+//    @Override
+//    public String toString() {
+//        return "Person{" +
+//                "id='" + id + '\'' +
+//                ", name='" + name + '\'' +
+//                ", year=" + year +
+//                ", gender='" + gender + '\'' +
+//                ", from='" + from + '\'' +
+//                ", phone='" + phone + '\'' +
+//                ", email='" + email + '\'' +
+//                ", edu='" + edu + '\'' +
+//                ", dept='" + dept + '\'' +
+//                ", wage='" + wage + '\'' +
+//                ", department=" + department +
+//                '}';
+//    }
 }
